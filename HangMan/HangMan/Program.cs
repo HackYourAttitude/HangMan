@@ -24,8 +24,12 @@ namespace HangMan
             while(true)
             {
                 string letter = GuesTheLetter();
-                InputLetter(ListOfLetters, letter, word);
+                bool IsIn = InputLetter(ListOfLetters, letter, word);
+                if (!IsIn)
+                    lifes = TakeLife(lifes);
+                CheckFailureCondition(lifes);
                 DisplayWord(ListOfLetters);
+                CheckWinCondition(ListOfLetters);
             }
             
         }
@@ -117,23 +121,49 @@ namespace HangMan
             
         }
 
-        public static void InputLetter(string[] ListOfLetters,string letter,string word)
+        public static bool InputLetter(string[] ListOfLetters,string letter,string word)
         {
+            bool flag = false;
             for(int x = 0; x <word.Length;x++)
             {
                 if (letter.ToUpper() == Convert.ToString(word[x]).ToUpper())
                 {
                     ListOfLetters[x] = letter.ToUpper();
+                    flag = true;
                 }
+                
             }
+            return flag;
 
         }
 
-        public static int LifeController(int lifes)
+        public static int TakeLife (int lifes)
         {
-            return lifes--;
-
+            return lifes-=1;
         }
+
+        public static void CheckFailureCondition(int lifes)
+        {
+            if(lifes == 0)
+            {
+                Console.WriteLine("Sorry No more Lifes left ...You Lost !!!");
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
+            }
+                
+        }
+
+        public static void CheckWinCondition(string[]ListOfLetters)
+        {
+            foreach (var item in ListOfLetters)
+            {
+                if (item.Contains("_"))
+                    return;
+            }
+            Console.WriteLine("Congratulation You have Won !!!");
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+
+
 
     }
 
