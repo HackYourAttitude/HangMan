@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "3dd55f1b-e741-4006-9947-d9856e5723d3": {
+      "ProjectGuid": "3dd55f1b-e741-4006-9947-d9856e5723d3",
+      "DisplayName": "HangMan",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "c85b89bd-9c06-4184-8845-660f17767ab3": {
+      "ProjectGuid": "c85b89bd-9c06-4184-8845-660f17767ab3",
+      "DisplayName": "Solution Items",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}

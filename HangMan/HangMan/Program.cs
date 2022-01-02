@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace HangMan
 {
@@ -8,31 +9,56 @@ namespace HangMan
     {
         static void Main(string[] args)
         {
-            RunGame();           
+            string fileName = "TextFile1.csv";
+            RunGame(fileName);           
         }
 
-        public static void RunGame()
+        public static void RunGame(string fileName)
         {
-            string words = OpenFile.ReadFile("C:\\Users\\48602\\Desktop\\HangMan\\CountriesCapitals.csv");
+            
+            string words = OpenFile.ReadFile(Path.GetFullPath(fileName));
             string word = GiveSingleWord(words).Trim();
-            Console.WriteLine(word+""+word.Length);
-            string[] ListOfLetters = new string[word.Length];
+            Console.WriteLine(word);
+            List<string> ListOfLetters = new List<string>();
             string level = ChooseDifficultyLevel();
             GenerateHashedWord(ListOfLetters, word.Length);
             int lifes = SetLifeLimit(level);
-            DisplayWord(ListOfLetters);
-            while(true)
+            Display(ListOfLetters);
+            LoopGame(word, lifes, ListOfLetters);         
+        }
+        public static void LoopGame(string word,int lifes,List<string> ListOfLetters)
+        {
+            List<string> ListOfUsedLetters = new List<string>();
+            while (true)
             {
                 string letter = GuesTheLetter();
-                bool IsIn = InputLetter(ListOfLetters, letter, word);
-                if (!IsIn)
-                    lifes = TakeLife(lifes);
-                CheckFailureCondition(lifes);
-                DisplayWord(ListOfLetters);
-                CheckWinCondition(ListOfLetters);
+                if (!SayIfLetterWasUsed(letter,ListOfUsedLetters))
+                {
+                    bool IsIn = InputLetter(ListOfLetters, letter, word);
+                    AddLetterToTheList(letter,ListOfUsedLetters);
+                    Display(ListOfUsedLetters);
+                    if (!IsIn)
+                        lifes = TakeLife(lifes);
+                    CheckFailureCondition(lifes);
+                    Display(ListOfLetters);
+                    CheckWinCondition(ListOfLetters);
+                }
+                Info();              
             }
-            
         }
+
+        public static bool SayIfLetterWasUsed(string letter, List<string> ListOfUsedLetters)
+        {
+            return ListOfUsedLetters.Contains(letter);
+        }
+
+        public static void AddLetterToTheList(string letter,List<string> ListOfUsedLetters)
+        {
+            if (!SayIfLetterWasUsed(letter, ListOfUsedLetters))
+                ListOfUsedLetters.Add(letter);
+
+        }
+        
 
         public static int SetLifeLimit(string level)
         {
@@ -74,7 +100,7 @@ namespace HangMan
             Console.WriteLine("Choose Game Level :");
             Console.WriteLine("");
             Console.WriteLine("Press '1' for Easy ==> 5 lifes");
-            Console.WriteLine("Press '2' for Midium ==> 4 lifes");
+            Console.WriteLine("Press '2' for Medium ==> 4 lifes");
             Console.WriteLine("Press '3' for Hard ==> 3 lifes");
             while (true)
             {
@@ -89,16 +115,17 @@ namespace HangMan
             }
         }
 
-        public static void GenerateHashedWord(string[]ListOfLetters,int wordLength)
+        public static void GenerateHashedWord(List<string>ListOfLetters,int wordLength)
         {
             for(int i = 0;i < wordLength;i++)
             {
-                ListOfLetters[i] = "_ ";
+                ListOfLetters.Add("_ ");
             }
          
         }
-        public static void  DisplayWord(string[]ListOfLetters)
+        public static void  Display(List<string>ListOfLetters)
         {
+            Console.WriteLine("");
             foreach (var item in ListOfLetters)
             {
                 Console.Write(item);
@@ -121,7 +148,7 @@ namespace HangMan
             
         }
 
-        public static bool InputLetter(string[] ListOfLetters,string letter,string word)
+        public static bool InputLetter(List<string> ListOfLetters,string letter,string word)
         {
             bool flag = false;
             for(int x = 0; x <word.Length;x++)
@@ -152,7 +179,7 @@ namespace HangMan
                 
         }
 
-        public static void CheckWinCondition(string[]ListOfLetters)
+        public static void CheckWinCondition(List<string>ListOfLetters)
         {
             foreach (var item in ListOfLetters)
             {
@@ -161,6 +188,11 @@ namespace HangMan
             }
             Console.WriteLine("Congratulation You have Won !!!");
             System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+
+        public static void Info()
+        {
+            Console.WriteLine("Sorry The letter was already used...");
         }
 
 
